@@ -19,6 +19,7 @@ Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+    Route::post('/refresh', [AuthController::class, 'refresh']);
 });
 
 // ==========================
@@ -44,6 +45,8 @@ Route::middleware('auth:api,admin')->group(function () {
     Route::apiResource('/alat', AlatController::class);
     Route::apiResource('/penyewaan_detail', PenyewaanDetailController::class);
     Route::apiResource('/pelanggan_data', PelangganDataController::class);
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
 });
 
 // ==========================

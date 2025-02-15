@@ -25,27 +25,52 @@ class AdminAuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return response()->json(['message' => 'Admin registered successfully', 'admin' => $admin], 201);
+        return response()->json([
+            'message' => 'Admin registered successfully',
+            'admin' => $admin
+        ], 201);
     }
 
     public function login(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to login. Please check your input data',
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
         $credentials = $request->only('username', 'password');
 
         if (!$token = auth('admin')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to login. Wrong username or password',
+            ], 401);
         }
 
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-        ]);
+            'success' => true,
+            'message' => 'Successfully logged in.',
+            'user' => auth('admin')->user(),
+            'access_token' => $token
+        ], 200);
     }
 
     public function logout()
     {
         auth('admin')->logout();
-        return response()->json(['message' => 'Successfully logged out']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Successfully logged out',
+        ], 200);
     }
 
     public function me()
@@ -53,3 +78,4 @@ class AdminAuthController extends Controller
         return response()->json(auth('admin')->user());
     }
 }
+    
