@@ -119,7 +119,7 @@ class AuthController extends Controller
             'exp' => now()->addMinutes(10080)->timestamp
         ])->fromUser($user);
 
-        config(['jwt.ttl' => env('JWT_TTL', 60)]);
+        config(['jwt.ttl' => env('JWT_TTL', 2880)]);
 
         return response()->json([
             'success' => true,
@@ -165,7 +165,7 @@ class AuthController extends Controller
             config(['jwt.ttl' => config('jwt.refresh_ttl')]);
             $newRefreshToken = JWTAuth::claims(['refresh' => true, 'user_id' => $user->id])->fromUser($user);
 
-            config(['jwt.ttl' => env('JWT_TTL', 60)]);
+            config(['jwt.ttl' => env('JWT_TTL', 2880)]);
 
             return response()->json([
                 'success' => true,
